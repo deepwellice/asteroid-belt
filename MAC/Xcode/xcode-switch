@@ -1,0 +1,61 @@
+#!/bin/sh
+
+activexcode=/Applications/Xcode.app
+xcode5=~/tools/Xcode502.app
+xcode6=~/tools/Xcode640.app
+xcode7=~/tools/Xcode710.app
+
+export current_xcode_version=`xcodebuild -version | grep "Xcode"`
+if grep "Xcode 5" <<< "$current_xcode_version"
+then
+    echo Current version is Xcode 5
+    export current_xcode_version=5
+    export backup_xcode_name=$xcode5
+elif grep "Xcode 6" <<< "$current_xcode_version"
+then
+    echo Current version is Xcode 6
+    export current_xcode_version=6
+    export backup_xcode_name=$xcode6
+elif grep "Xcode 7" <<< "$current_xcode_version"
+then
+    echo Current version is Xcode 7
+    export current_xcode_version=7
+    export backup_xcode_name=$xcode7
+else
+    echo Unhandled Xcode version, $current_xcode_version.
+    exit 1
+fi
+
+read -p "Target Xcode version(5/6/7):" target_xcode_version
+if [ "$target_xcode_version" = "" ]; then exit 0; fi
+if [ $current_xcode_version = $target_xcode_version ]
+then
+    echo Already using Xcode $target_xcode_version.
+    exit 0
+fi
+
+echo ====== switching from xcode $current_xcode_version to $target_xcode_version
+echo $backup_xcode_name
+echo "Autodesk1090" | sudo -S mv $activexcode $backup_xcode_name
+if [ "$target_xcode_version" = "5" ]
+then
+    sudo mv "$xcode5" "$activexcode"
+elif [ "$target_xcode_version" = "6" ]
+then
+    sudo mv "$xcode6" "$activexcode"
+elif [ "$target_xcode_version" = "7" ]
+then
+    sudo mv "$xcode7" "$activexcode"
+else
+    echo Unhandled version.
+fi
+
+echo .
+xcodebuild -version
+sudo xcode-select -r
+echo ====== switching successfully
+
+open /Applications/Xcode.app
+
+#defaults write com.apple.dock ResetLaunchPad -bool true
+#killall Dock
