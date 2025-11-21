@@ -1,4 +1,4 @@
-# Hide Firefox UI Elements
+# Firefox UI Customization
 
 ## Set Firefox to look for userChrome.css at startup
 
