@@ -1,4 +1,5 @@
 # Firefox UI Customization
+Ref: https://www.userchrome.org
 
 ## Set Firefox to look for userChrome.css at startup
 
